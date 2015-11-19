@@ -23,8 +23,8 @@ do
 		file=`ls "$JOB_DIR" | head -1`;		
 		
 		#make sure file is not being written
-		#if ! [[ `lsof | grep $file` ]]
-		#then
+		if ! [[ `lsof 2>/dev/null | grep $JOB_DIR/$file` ]]
+		then
 			#move the file to JOB ENV DIR
 			mv "$JOB_DIR"/"$file" "$JOB_ENV_DIR"/"$JOB_NAME"
 			
@@ -44,7 +44,10 @@ do
 			
 			#clean
 			rm $JOB_ENV_DIR/"$output"
-		#fi	
+			echo "MODIF DONE"
+		else
+			echo "MODIFYING"
+		fi	
 	else
 		sleep 2
 	fi
