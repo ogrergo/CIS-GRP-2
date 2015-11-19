@@ -41,8 +41,8 @@ do
 			output="$file.output"
 			if [[ $? -eq $EXIT_BY_TIMEOUT_CODE ]]
 			then
-				echo "ERROR: task $file timed out." > $JOB_ENV_DIR/"$output"
-					
+				echo "ERROR: your task exceeded maximum execution time." > $JOB_ENV_DIR/"$output"
+				echo "[ERROR] - `date` - $file - Task timed out." >> log
 			else
 				mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
 			fi
