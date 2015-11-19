@@ -1,7 +1,7 @@
 #!/bin/bash
 JOB_DIR="/home/slave_user/docker_env"
 JOB_TAR="$JOB_DIR/job.tar.gz"
-JOB_CMD="$JOB_DIR/job_cmd.sh"
+JOB_CMD="$JOB_DIR/script.sh"
 JOB_INPUT="$JOB_DIR/input"
 JOB_OUTPUT="$JOB_DIR/output"
 
@@ -17,5 +17,6 @@ $JOB_CMD &> $JOB_OUTPUT < $JOB_INPUT
 
 #clean the directory, leaving only the output
 rm $JOB_CMD $JOB_INPUT  $JOB_TAR
+
 #leave the countainer
 exit
