@@ -44,9 +44,6 @@ do
 			
 			#clean
 			rm $JOB_ENV_DIR/"$output"
-			echo "MODIF DONE"
-		else
-			echo "MODIFYING"
 		fi	
 	else
 		sleep 2
