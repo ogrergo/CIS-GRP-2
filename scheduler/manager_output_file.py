@@ -3,6 +3,7 @@
 
 import sys
 import subprocess
+from parser_log_file import update_logger_file
 
 def findGridSource(file_name):
 	pieces = file_name.strip('\n').split('_')
@@ -13,11 +14,19 @@ def renameOutput(file_name):
 	pieces = file_name.strip('\n').split(".")[0].split("_")[1:]
 	piecesToString = 'output_' + "_".join(pieces)
 	subprocess.call("mv "+ file_name + " " + piecesToString, shell = True)
+	return piecesToString
 	
 def main(file_name):
 	gridNumber = findGridSource(file_name)
-	renameOutput(file_name)
-	return gridNumber
+	newName = renameOutput(file_name)
+	update_logger_file(newName, gridNumber, "received")
+	if gridNumber == 2:
+		#subprocess.Popen(["./run_job.sh", inputfile, slv_ip], shell=True) RODAR UM ENVIO PRA INTERFACE
+		pass
+	else:
+		#subprocess.Popen(["./run_job.sh", inputfile, slv_ip], shell=True) RODAR UM ENVIO PRA INTERFACE
+		pass
+	#subprocess.call("rm /home/new_ordoserver/interface_ftp/"+ newName, shell=True)
 
 if __name__ == '__main__':
 	print main(sys.argv[1])

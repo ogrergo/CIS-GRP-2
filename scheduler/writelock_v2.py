@@ -5,6 +5,7 @@ import fileinput
 import pickle
 import sys
 import subprocess
+import random
 from parser_log_file import update_logger_file
 
 
@@ -13,6 +14,7 @@ MAX_DOCKERS_PER_SLAVE = 4
 
 slave_file = "slaves.txt"
 log_file = "log.txt"
+GRIDS = [1,3,4] # IPS
 
 def update_slave_dockers():
 	with open(slave_file, "a+") as g:
@@ -59,7 +61,8 @@ def update_slave_dockers():
 		# we must do something if there is not an available slave to run the task
 		else:
 			#pass
-			raise Exception("No available servers to execute the task at the moment.\n")
+			return None
+			#raise Exception("No available servers to execute the task at the moment.\n")
 	
 
 def main():
@@ -71,13 +74,24 @@ def main():
 		print "file = %s" %inputfile
 		slv_ip = update_slave_dockers()
 		#new_inputfile_name = "%s_%s" %(slv_ip, inputfile)
+		if slv_ip == None:
+			chosedGrid = random.choice(GRIDS)
+
+			# WE NEED THE GRID IP
+			# WE NEED TO SEND IT
+
+			update_logger_file(inputfile, "GRID "+ str(chosedGrid), "sent")
+			#subprocess.call("rm /home/new_ordoserver/received_jobs/"+ inputfile)
+			#raise Exception("We need that grid ip =((((((.\n")
+			# REMOVE
 
 
-		#subprocess.call("echo %s %s >> %s" %(inputfile, slv_ip, log_file), shell=True)
-		update_logger_file(inputfile, slv_ip, "sent")
-		###########subprocess.call("mv %s %s" %(inputfile, new_inputfile_name), shell=True)
-		#filename of the file sent to the slave is as follows: slaveID@IPSlave_FileName
-		#subprocess.Popen(["./run_job.sh", inputfile, slv_ip], shell=True)
+		else:
+			update_logger_file(inputfile, slv_ip, "sent")
+			#filename of the file sent to the slave is as follows: slaveID@IPSlave_FileName
+			subprocess.call("./run_job.sh /home/new_ordoserver/received_jobs/"+inputfile+ " "+ slv_ip, shell=True)
+			subprocess.call("rm /home/new_ordoserver/received_jobs/"+ inputfile, shell=True)
+
 
 	else:
 		print "You should inform the file name. Run: python writelock_2.py file_name\n"
