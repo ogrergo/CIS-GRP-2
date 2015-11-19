@@ -41,7 +41,8 @@ do
 			output="$file.output"
 			if [[ $? -eq $EXIT_BY_TIMEOUT_CODE ]]
 			then
-				cat "ERROR: task $file timed out." > $JOB_ENV_DIR/"$output"
+				echo "ERROR: task $file timed out." > $JOB_ENV_DIR/"$output"
+					
 			else
 				mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
 			fi
