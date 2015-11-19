@@ -11,7 +11,14 @@ JOB_NAME="job.tar.gz"
 LOG_FILE="$SLAVE_DIR/log"
 
 #DOCKER CONTAINER VARIABLES
+JOB_TAR="$JOB_ENV_DIR/job.tar.gz"
+JOB_CMD="$JOB_ENV_DIR/script.sh"
+JOB_INPUT="$JOB_ENV_DIR/input"
+JOB_OUTPUT="$JOB_ENV_DIR/output"
 CONTAINER_DIR="/home/slave_user/docker_env"
+CONTAINER_INPUT="$CONTAINER_DIR/input"
+CONTAINER_OUTPUT="$CONTAINER_DIR/output"
+CONTAINER_CMD="$CONTAINER_DIR/script.sh"
 
 mkdir $JOB_DIR 2>/dev/null
 echo "[INFO]- `date` - Starting slave's demon" >> $LOG_FILE
@@ -27,30 +34,52 @@ do
 		if ! [[ `lsof 2>/dev/null | grep $JOB_DIR/$file` ]]
 		then
 			
+			#-----------------------
+			# Preparing environment
+			#-----------------------
 			echo "[INFO]- `date` - $file - File received - Preparing environment" >> $LOG_FILE
-			
 			#move the file to JOB ENV DIR
-			mv "$JOB_DIR"/"$file" "$JOB_ENV_DIR"/"$JOB_NAME"
+			mv $JOB_DIR/$file $JOB_TAR
+			#extract the archive
+			echo "[INFO]- `date` - $file - Extracting job" >> $LOG_FILE
+			tar -zxf $JOB_TAR -C $JOB_ENV_DIR
+			#add execution rights to the job
+			echo "[INFO]- `date` - $file - Editing rights" >> $LOG_FILE
+			chmod u+x $JOB_CMD
+			#creates input if doesn't exist
+			>>$JOB_INPUT
 			
 			#-----------------------
-			# Run the job in docker
+			# Log command
+			#-----------------------
+			echo "[INFO]- `date` - $file - CMD :" >> $LOG_FILE
+			cat $JOB_CMD >> $LOG_FILE
+			echo "[INFO]- `date` - $file - INPUT :" >> $LOG_FILE
+			cat $JOB_INPUT >> $LOG_FILE
+			
+			#-----------------------
+			# Run the job in Docker
 			#-----------------------
 			
 			#rm previoux job if any
 			docker rm job &>/dev/null	
+			echo "[INFO]- `date` - $file - Starting job execution in Docker" >> $LOG_FILE
+			docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash "$CONTAINER_CMD &> $CONTAINER_OUTPUT < $CONTAINER_INPUT"
+			echo "[INFO]- `date` - $file - End of docker job execution" >> $LOG_FILE
 			
-			echo "[INFO]- `date` - $file - Running docker environment" >> $LOG_FILE
-			docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash $CONTAINER_DIR/run.sh
-			cat $JOB_ENV_DIR/log >> $LOG_FILE
-			echo "[INFO]- `date` - $file - End of docker execution - Sending response" >> $LOG_FILE
-			
-			#when docker container is closed, send response	and clean
+			#-----------------------
+			# Send response
+			#-----------------------
+			echo "[INFO]- `date` - $file - Sending response" >> $LOG_FILE
 			output="$file.output"
-			mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
+			mv $JOB_ENV_DIR/output $JOB_ENV_DIR/$output
 			scp $JOB_ENV_DIR/$output $ADDRESS_SCHEDULER:$REPOSITORY_SCHEDULER
-			rm $JOB_ENV_DIR/"$output"
-				
-			echo "[INFO]- `date` - $file - End of job" >> $LOG_FILE
+			
+			#-----------------------
+			# Clean environment
+			#-----------------------
+			rm $JOB_ENV_DIR/*				
+			echo "[INFO]- `date` - $file - End of job and environment cleaned" >> $LOG_FILE
 		fi	
 	else
 		sleep 2
