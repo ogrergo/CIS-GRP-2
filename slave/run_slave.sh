@@ -1,9 +1,15 @@
 #!/bin/bash
-JOB_DIR="jobs"
-JOB_ENV_DIR="docker_env"
-JOB_NAME="job.tar.gz"
+#SCHEDULER VARIABLES
 ADDRESS_SCHEDULER="slave1@129.88.242.141"
 REPOSITORY_SCHEDULER="~"
+
+#HOST VARIABLES
+SLAVE_DIR="~/CIS-GRP-2/slave"
+JOB_DIR="$SLAVE_DIR/jobs"
+JOB_ENV_DIR="$SLAVE_DIR/docker_env"
+JOB_NAME="job.tar.gz"
+
+#DOCKER CONTAINER VARIABLES
 
 while true
 do
@@ -12,6 +18,7 @@ do
 	if test "$(ls -A "$JOB_DIR")"; then
 		#get first job
 		file=`ls "$JOB_DIR" | head -1`;		
+		
 		#make sure file is not being written
 		#if ! [[ `lsof | grep $file` ]]
 		#then
@@ -24,9 +31,6 @@ do
 			#rm previoux job if any
 			docker rm job &>/dev/null
 			
-			#docker run --name job -v ~/docker_env:/home/slave_user/job -it -u slave_user slave0 /bin/bash /home/slave_user/job/run.sh
-			
-			#./run_docker_step3.sh
 			docker run --name job -v ~/docker_env:/home/slave_user/docker_env -it -u slave_user slave0 /bin/bash /home/slave_user/docker_env/run.sh
 			
 			#when docker container is closed, send response	
