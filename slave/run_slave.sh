@@ -36,13 +36,14 @@ do
 			
 			#rm previoux job if any
 			docker rm job &>/dev/null
-			
-			timeout 10m docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash $CONTAINER_DIR/run.sh
 			output="$file.output"
+			timeout 10m docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash $CONTAINER_DIR/run.sh
+			# this if MUST be run after the timeout command
+			# or timeout's return code must be saved!
 			if [[ $? -eq $EXIT_BY_TIMEOUT_CODE ]]
 			then
 				echo "ERROR: your task exceeded maximum execution time." > $JOB_ENV_DIR/"$output"
-				echo "[ERROR] - `date` - $file - Task timed out." >> log
+				echo "[ERROR]- `date` - $file - Task timed out." >> log
 			else
 				mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
 			fi
