@@ -6,7 +6,7 @@ JOB_INPUT="$JOB_DIR/input"
 JOB_OUTPUT="$JOB_DIR/output"
 
 #extract the archive
-tar -zxvf $JOB_TAR -C $JOB_DIR
+tar -zxf $JOB_TAR -C $JOB_DIR
 
 #add execution rights to the job
 chmod u+x $JOB_CMD
