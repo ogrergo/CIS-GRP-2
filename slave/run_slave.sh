@@ -4,7 +4,7 @@ ADDRESS_SCHEDULER="$USER@129.88.242.132"
 REPOSITORY_SCHEDULER="~"
 
 #HOST VARIABLES
-SLAVE_DIR="~/CIS-GRP-2/slave"
+SLAVE_DIR="$HOME/CIS-GRP-2/slave"
 JOB_DIR="$SLAVE_DIR/jobs"
 JOB_ENV_DIR="$SLAVE_DIR/docker_env"
 JOB_NAME="job.tar.gz"
@@ -33,7 +33,7 @@ do
 			#rm previoux job if any
 			docker rm job &>/dev/null
 			
-			docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user slave0 /bin/bash $CONTAINER_DIR/run.sh
+			docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash $CONTAINER_DIR/run.sh
 			
 			#when docker container is closed, send response	
 			output="$file.output"
