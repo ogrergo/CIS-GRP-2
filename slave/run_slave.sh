@@ -2,6 +2,7 @@
 #SCHEDULER VARIABLES
 ADDRESS_SCHEDULER="$USER@129.88.242.132"
 REPOSITORY_SCHEDULER="~"
+TIMEOUT_DELAY="1s"
 
 #HOST VARIABLES
 SLAVE_DIR="$HOME/CIS-GRP-2/slave"
@@ -19,6 +20,8 @@ CONTAINER_DIR="/home/slave_user/docker_env"
 CONTAINER_INPUT="$CONTAINER_DIR/input"
 CONTAINER_OUTPUT="$CONTAINER_DIR/output"
 CONTAINER_CMD="$CONTAINER_DIR/script.sh"
+
+EXIT_BY_TIMEOUT_CODE=124
 
 mkdir $JOB_DIR 2>/dev/null
 echo "[INFO]- `date` - Starting slave's demon" >> $LOG_FILE
@@ -60,22 +63,25 @@ do
 			#-----------------------
 			# Run the job in Docker
 			#-----------------------
-			
 			#rm previoux job if any
 			docker rm job &>/dev/null	
+			output="$file.output"
 			echo "[INFO]- `date` - $file - Starting job execution in Docker" >> $LOG_FILE
-			docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash -c "$CONTAINER_CMD &> $CONTAINER_OUTPUT < $CONTAINER_INPUT"
-			#docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash
-			echo "[INFO]- `date` - $file - End of docker job execution" >> $LOG_FILE
+			docker run --rm --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER timeout $TIMEOUT_DELAY /bin/bash -c "$CONTAINER_CMD &> $CONTAINER_OUTPUT < $CONTAINER_INPUT"
+			if [[ $? -eq $EXIT_BY_TIMEOUT_CODE ]]
+			then
+				echo "ERROR: your task exceeded maximum execution time." > $JOB_ENV_DIR/$output
+				echo "[ERROR]- `date` - $file - Task timed out." >> $LOG_FILE
+			else
+				echo "[INFO]- `date` - $file - End of docker job execution" >> $LOG_FILE
+				mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
+			fi
 			
 			#-----------------------
 			# Send response
 			#-----------------------
 			echo "[INFO]- `date` - $file - Sending response" >> $LOG_FILE
-			output="$file.output"
-			mv $JOB_ENV_DIR/output $JOB_ENV_DIR/$output
-			cat $JOB_ENV_DIR/$output
-			scp -v $JOB_ENV_DIR/$output $ADDRESS_SCHEDULER:$REPOSITORY_SCHEDULER
+			scp $JOB_ENV_DIR/$output $ADDRESS_SCHEDULER:$REPOSITORY_SCHEDULER
 			
 			#-----------------------
 			# Clean environment
