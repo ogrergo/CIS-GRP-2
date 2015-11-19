@@ -12,6 +12,8 @@ JOB_NAME="job.tar.gz"
 #DOCKER CONTAINER VARIABLES
 CONTAINER_DIR="/home/slave_user/docker_env"
 
+EXIT_BY_TIMEOUT_CODE=124
+
 mkdir $JOB_DIR 2>/dev/null
 
 while true
@@ -35,11 +37,15 @@ do
 			#rm previoux job if any
 			docker rm job &>/dev/null
 			
-			docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash $CONTAINER_DIR/run.sh
-			
-			#when docker container is closed, send response	
+			timeout 10m docker run --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash $CONTAINER_DIR/run.sh
 			output="$file.output"
-			mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
+			if [[ $? -eq $EXIT_BY_TIMEOUT_CODE ]]
+			then
+				cat "ERROR: task $file timed out." > $JOB_ENV_DIR/"$output"
+			else
+				mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
+			fi
+			#when docker container is closed, send response	
 			scp $JOB_ENV_DIR/$output $ADDRESS_SCHEDULER:$REPOSITORY_SCHEDULER
 			
 			#clean
