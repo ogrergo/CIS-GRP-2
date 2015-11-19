@@ -34,8 +34,10 @@ echo " Verifying Docker is installed correctly with HELLO WORLD"
 sudo docker run hello-world
 
 echo "=============================="
+echo -e "\\033[1;32m" " DOCKER INSTALLATION COMPLETE" "\\033[0m"
 echo "==============================\n"
-echo " INSTALLATION COMPLETE "
-echo "Now just add docker group to your user"
-echo "command : sudo usermod -aG docker <your_login>"
-echo "And then, log out and log back in"
+echo "Now adding docker group to your user..."
+sudo usermod -aG docker $USER
+echo "Complete."
+echo -e "\\033[1;31m" "TODO:" "\\033[0m"
+echo "Now just log out (logout cmd) and log back in."
