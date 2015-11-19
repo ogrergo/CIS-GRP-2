@@ -2,7 +2,7 @@
 JOB_DIR="jobs"
 JOB_ENV_DIR="docker_env"
 JOB_NAME="job.tar.gz"
-ADDRESS_SCHEDULER="slave1@129.88.242.141"
+ADDRESS_SCHEDULER="$USER@129.88.242.132"
 REPOSITORY_SCHEDULER="~"
 
 while true
@@ -33,7 +33,7 @@ do
 			output="$file.output"	
 			mv ~/docker_env/output ~/docker_env/"$output"
 			scp ~/docker_env/$output $ADDRESS_SCHEDULER:$REPOSITORY_SCHEDULER
-			#rm ~/docker_env/"$output"
+			rm ~/docker_env/"$output"
 			
 		#fi	
 	else
