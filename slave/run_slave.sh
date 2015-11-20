@@ -92,11 +92,13 @@ do
 
 			echo "[INFO]- `date` - $file - Starting job execution in Docker" >> $LOG_FILE
 			docker run --rm --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER timeout $TIMEOUT_DELAY /bin/bash -c "$CONTAINER_CMD &> $CONTAINER_OUTPUT < $CONTAINER_INPUT"
-			if [[ $? -eq $EXIT_BY_TIMEOUT_CODE ]]
+			ret=$?
+			echo $ret >> $LOG_FILE
+			if [[ $ret -eq $EXIT_BY_TIMEOUT_CODE ]]
 			then
 				echo "ERROR: your task exceeded maximum execution time." > $JOB_ENV_DIR/$output
 				echo "[ERROR]- `date` - $file - Task timed out." >> $LOG_FILE
-			elif [[ $? -eq 0 ]]; then
+			elif [[ $ret -eq 0 ]]; then
 				echo "[INFO]- `date` - $file - End of docker job execution" >> $LOG_FILE
 				mv $JOB_ENV_DIR/output $JOB_ENV_DIR/"$output"
 			else
