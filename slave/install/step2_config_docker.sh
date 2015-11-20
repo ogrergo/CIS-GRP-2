@@ -12,5 +12,5 @@ limit fsize 102400000 204800000" | sudo tee -a /etc/init/docker.conf
 sudo service docker start
 
 #Step 4 : build docker custom image
-docker build -t $USER ~
+docker build -t $USER $HOME/CIS-GRP-2/slave/install
 

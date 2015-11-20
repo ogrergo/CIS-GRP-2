@@ -23,8 +23,11 @@ CONTAINER_CMD="$CONTAINER_DIR/script.sh"
 
 EXIT_BY_TIMEOUT_CODE=124
 
-mkdir $JOB_DIR 2>/dev/null
 echo "[INFO]- `date` - Starting slave's demon" >> $LOG_FILE
+
+mkdir $JOB_DIR 2>/dev/null
+mkdir $JOB_ENV_DIR 2>/dev/null
+
 while true
 do
 
