@@ -65,7 +65,9 @@ do
 			#extract the archive
 			echo "[INFO]- `date` - $file - Extracting job" >> $LOG_FILE
 			tar -zxf $JOB_TAR -C $JOB_ENV_DIR
-			if [[ $? -ne 0 ]]; then
+			ret_gzip=$?
+			echo $ret_gzip >> $LOG_FILE
+			if [[ $ret_gzip -ne 0 ]]; then
 				echo "[ERROR]- `date` - $file - Job extraction failed" >> $LOG_FILE
 				echo "ERROR: Your job could not be decompressed, maybe it's not in gzip format?" >> $JOB_ENV_DIR/$output
 				send_response $JOB_ENV_DIR/$output
