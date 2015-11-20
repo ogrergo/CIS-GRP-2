@@ -1,0 +1,301 @@
+ADDUSER(8)                  System Manager's Manual                 ADDUSER(8)
+
+
+
+NNOOMM
+       adduser, addgroup - Ajouter un utilisateur ou un groupe au système
+
+SSYYNNOOPPSSIISS
+       aadddduusseerr  [options]  [--home  DIR]  [--shell  SHELL]  [--no-create-home]
+       [--uid ID] [--firstuid ID] [--lastuid ID] [--ingroup GROUP | --gid  ID]
+       [--disabled-password]      [--disabled-login]      [--gecos      GECOS]
+       [--add_extra_groups] [--encrypt-home] user
+
+       aadddduusseerr   --system   [options]    [--home    REP]    [--shell    SHELL]
+       [--no-create-home]  [--uid  ID] [--group | --ingroup GROUPE | --gid ID]
+       [--disabled-password] [--disabled-login] [--gecos GECOS] utilisateur
+
+       aaddddggrroouupp [options] [--gid ID] groupe
+
+       aaddddggrroouupp --system [options] [--gid ID] groupe
+
+       aadddduusseerr [options] utilisateur groupe
+
+   OOPPTTIIOONNSS CCOOMMMMUUNNEESS
+       [--quiet] [--debug] [--force-badname] [--help|-h]  [--version]  [--conf
+       FICHIER]
+
+DDEESSCCRRIIPPTTIIOONN
+       aadddduusseerr et aaddddggrroouupp ajoutent des utilisateurs ou des groupes au système
+       en fonction des options fournies en ligne de commande et  des  informa‐
+       tions  contenues dans le fichier de configuration _/_e_t_c_/_a_d_d_u_s_e_r_._c_o_n_f. Ce
+       sont des interfaces plus conviviales  que  les  programmes  uusseerraadddd  et
+       ggrroouuppaadddd.  Elles  permettent  de  choisir par défaut des UID ou des GID
+       conformes à la charte Debian, de créer un répertoire  personnel  confi‐
+       guré suivant un modèle (squelette), d'utiliser un script sur mesure, et
+       d'autres fonctionnalités encore. Vous pouvez exécuter aadddduusseerr  et  aadddd‐‐
+       ggrroouupp de l'une de ces cinq façons :
+
+   AAjjoouutteerr uunn uuttiilliissaatteeuurr nnoorrmmaall..
+       Lorsqu'il  est  exécuté avec un seul paramètre qui n'est pas une option
+       et sans les options ----ssyysstteemm ou ----ggrroouupp, aadddduusseerr ajoute un  utilisateur
+       normal.
+
+       aadddduusseerr  choisira  le  premier identifiant (UID) dans le domaine défini
+       pour les utilisateurs normaux dans le fichier de  configuration.  L'UID
+       peut être forcé avec l'option ----uuiidd.
+
+       Le  domaine indiqué dans le fichier de configuration peut être remplacé
+       avec les options ----ffiirrssttuuiidd et ----llaassttuuiidd.
+
+       Par défaut, chaque utilisateur d'un système Debian  GNU/Linux  se  voit
+       attribuer  un  groupe  avec  son propre nom. Les groupes d'utilisateurs
+       facilitent la gestion des répertoires qui sont accessibles en  écriture
+       pour  un  groupe : les utilisateurs appropriés sont placés dans le nou‐
+       veau groupe, le bit SGID du répertoire est positionné, et  on  s'assure
+       que  tous  les  utilisateurs  ont  un  masque  de  création de fichiers
+       (« umask ») de 002. Si cette option est désactivée en configurant UUSSEERR‐‐
+       GGRROOUUPPSS  à  _n_o,  tous les identifiants de groupe des utilisateurs seront
+       UUSSEERRSS__GGIIDD. Le groupe primaire des utilisateurs peut aussi être forcé en
+       ligne  de commande avec l'option ----ggiidd ou ----iinnggrroouupp respectivement pour
+       l'identifiant numérique et le nom du groupe. De plus, les  utilisateurs
+       peuvent  être  ajoutés  à  un ou des groupes définis dans adduser.conf,
+       soit en positionnant ADD_EXTRA_GROUPS à 1 dans  adduser.conf,  soit  en
+       utilisant l'option --add_extra_groups en ligne de commande.
+
+       aadddduusseerr créera un répertoire personnel en fonction de DDHHOOMMEE, GGRROOUUPPHHOOMMEESS
+       et LLEETTTTEERRHHOOMMEESS. Le répertoire personnel peut être  forcé  en  ligne  de
+       commande   avec   l'option   ----hhoommee,  et  l'interpréteur  de  commandes
+       (« shell ») avec l'option ----sshheellll. Le bit SGID du répertoire  personnel
+       est  positionné  si  UUSSEERRGGRROOUUPPSS  vaut  _y_e_s, de telle sorte que tous les
+       fichiers créés dans le répertoire personnel de l'utilisateur auront  le
+       bon groupe.
+
+       aadddduusseerr  will  copy  files from SSKKEELL into the home directory and prompt
+       for finger (gecos) information and a password. The gecos  may  also  be
+       set  with  the  ----ggeeccooss  option.  With the ----ddiissaabblleedd--llooggiinn option, the
+       account will be created but will be disabled until a password  is  set.
+       The  ----ddiissaabblleedd--ppaasssswwoorrdd  option  will not set a password, but login is
+       still possible (for example with SSH RSA keys). To set up an  encrypted
+       home  directory  for  the  new user, add the ----eennccrryypptt--hhoommee option. For
+       more information, refer to the -b option of eeccrryyppttffss--sseettuupp--pprriivvaattee((11))..
+
+       Si le fichier //uussrr//llooccaall//ssbbiinn//aadddduusseerr..llooccaall existe, il est exécuté  une
+       fois  que l'utilisateur a été configuré, de façon à réaliser des opéra‐
+       tions propres au système. Les paramètres passés à aadddduusseerr..llooccaall sont :
+       nom_utilisateur uid gid répertoire_personnel
+       La variable d'environnement VERBOSE est positionnée de  la  façon  sui‐
+       vante :
+
+       0 si --quiet est spécifiée
+
+       1 si ni --quiet ni --debug ne sont spécifiées
+
+       2 si --debug est spécifiée
+
+              (Ceci  s'applique  également à la variable DEBUG, mais DEBUG est
+              déconseillée et  sera  supprimée  dans  une  version  ultérieure
+              d'adduser).
+
+
+   AAjjoouutteerr uunn uuttiilliissaatteeuurr ssyyssttèèmmee..
+       Lorsqu'il est appelé avec un seul paramètre qui n'est pas une option et
+       avec l'option ----ssyysstteemm, aadddduusseerr ajoute un utilisateur  système.  Si  un
+       utilisateur  ayant  le  même  nom existe déjà et possède un identifiant
+       dans l'intervalle affecté au système (ou, quand l'identifiant est  spé‐
+       cifié,  si  l'utilisateur  avec  cet  identifiant existe déjà), aadddduusseerr
+       quittera avec un message d'avertissement.  Ce  message  d'avertissement
+       peut être supprimé avec l'option ----qquuiieett.
+
+       aadddduusseerr  choisira  le  premier UID disponible dans l'intervalle indiqué
+       pour les utilisateurs système dans le fichier de  configuration  (entre
+       FIRST_SYSTEM_UID  et LAST_SYSTEM_UID). Si vous souhaitez un identifiant
+       spécifique, vous pouvezle spécifier à l'aide de l'option ----uuiidd.
+
+       Par défaut,  les  utilisateurs  système  sont  placés  dans  le  groupe
+       nnooggrroouupp. Pour placer le nouvel utilisateur système dans un groupe exis‐
+       tant, utilisez l'option ----ggiidd ou ----iinnggrroouupp. Pour placer le nouvel  uti‐
+       lisateur  système  dans  un  groupe avec le même identifiant numérique,
+       utilisez l'option ----ggrroouupp.
+
+       Un répertoire personnel est créé avec les mêmes  règles  que  pour  les
+       utilisateurs  normaux.  Le  nouvel  utilisateur système aura _/_b_i_n_/_f_a_l_s_e
+       comme interpréteur de commandes (à moins qu'un autre interpréteur  soit
+       fourni  avec  l'option  ----sshheellll),  et  aura  un  compte  désactivé. Les
+       fichiers du squelette ne sont pas copiés.
+
+   AAjjoouutteerr uunn ggrroouuppee uuttiilliissaatteeuurr..
+       Si aadddduusseerr est appelé avec l'option ----ggrroouupp et sans l'option  ----ssyysstteemm,
+       ou si aaddddggrroouupp est appelé, un groupe utilisateur sera ajouté.
+
+
+       Un  identifiant numérique GID est choisi dans l'intervalle indiqué pour
+       les identifiants des groupes système dans le fichier  de  configuration
+       (FIRST_GID,  LAST_GID). Pour éviter ceci, vous pouvez fournir l'identi‐
+       fiant à l'aide de l'option ----ggiidd.
+
+       Le groupe est créé sans utilisateur.
+
+   AAjjoouutteerr uunn ggrroouuppee ssyyssttèèmmee..
+       Si aaddddggrroouupp est appelé avec l'option ----ssyysstteemm, un groupe  système  sera
+       ajouté.
+
+       Un  identifiant numérique GID est choisi dans l'intervalle indiqué pour
+       les identifiants des groupes système dans le fichier  de  configuration
+       (FIRST_SYSTEM_GID,  LAST_SYSTEM_GID).  Pour  éviter  ceci,  vous pouvez
+       fournir l'identifiant à l'aide de l'option ----ggiidd.
+
+       Le groupe est créé sans utilisateur.
+
+   AAjjoouutteerr uunn uuttiilliissaatteeuurr eexxiissttaanntt àà uunn ggrroouuppee eexxiissttaanntt..
+       Lorsqu'il est appelé avec deux  paramètres  n'étant  pas  des  options,
+       aadddduusseerr ajoutera un utilisateur existant à un groupe existant.
+
+OOPPTTIIOONNSS
+       ----ccoonnff _F_I_C_H_I_E_R
+              Utilise _F_I_C_H_I_E_R plutôt que _/_e_t_c_/_a_d_d_u_s_e_r_._c_o_n_f.
+
+       ----ddiissaabblleedd--llooggiinn
+              N'utilise  pas  passwd pour fixer le mot de passe. L'utilisateur
+              ne pourra pas utiliser son compte avant que  son  mot  de  passe
+              soit donné.
+
+       ----ddiissaabblleedd--ppaasssswwoorrdd
+              Comme  ----ddiissaabblleedd--llooggiinn,  mais les connexions sont toujours pos‐
+              sibles (par exemple par SSH avec des clés RSA), mais pas par une
+              authentification par mot de passe.
+
+       ----ffoorrccee--bbaaddnnaammee
+              By  default, user and group names are checked against the confi‐
+              gurable regular expression NNAAMMEE__RREEGGEEXX (or  NNAAMMEE__RREEGGEEXX__SSYYSSTTEEMM  if
+              ----ssyysstteemm  is  specified)   specified  in the configuration file.
+              This option forces aadddduusseerr and aaddddggrroouupp to  apply  only  a  weak
+              check for validity of the name.
+
+       ----ggeeccooss _G_E_C_O_S
+              Fixe  le  champ  gecos de la nouvelle entrée générée. aadddduusseerr ne
+              demandera pas d'information de type finger si cette  option  est
+              donnée.
+
+       ----ggiidd _I_D
+              Lorsqu'un groupe est créé, cette option permet de forcer l'iden‐
+              tifiant numérique du groupe.  Lorsqu'un  utilisateur  est  créé,
+              cette option place cet utilisateur dans ce groupe.
+
+       ----ggrroouupp
+              Avec  l'option  ----ssyysstteemm, un groupe ayant le même nom et le même
+              identifiant numérique que l'utilisateur système est  créé.  Sans
+              l'option ----ssyysstteemm, un groupe avec le nom fourni en paramètre est
+              créé. C'est le comportement  par  défaut  lorsque  aaddddggrroouupp  est
+              appelé.
+
+       ----hheellpp Affiche un résumé des instructions.
+
+       ----hhoommee _R_E_P
+              Utilise  _R_E_P comme répertoire personnel de l'utilisateur, plutôt
+              que la valeur par défaut définie dans le fichier  de  configura‐
+              tion.  Si  le  répertoire  n'existe  pas,  il  est  créé, et les
+              fichiers du squelette y sont copiés.
+
+       ----sshheellll _S_H_E_L_L
+              Utilise _S_H_E_L_L comme interpréteur de commandes  initial  (« login
+              shell »),  plutôt  que  l'interpréteur  donné dans le fichier de
+              configuration.
+
+       ----iinnggrroouupp _G_R_O_U_P_E
+              Ajoute le nouvel utilisateur au _G_R_O_U_P_E  plutôt  qu'à  un  groupe
+              utilisateur ou qu'au groupe par défaut défini par UUSSEERRSS__GGIIDD dans
+              le fichier de configuration. Cette  option  concerne  le  groupe
+              primaire  des  utilisateurs. Pour ajouter des groupes supplémen‐
+              taires, consultez l'option aadddd__eexxttrraa__ggrroouuppss.
+
+       ----nnoo--ccrreeaattee--hhoommee
+              Ne crée pas le répertoire personnel, même s'il n'existe pas.
+
+       ----qquuiieett
+              Supprime les messages d'information, n'affiche que les  avertis‐
+              sements et les erreurs.
+
+       ----ddeebbuugg
+              Mode bavard, utile pour l'investigation d'un problème avec aadddduu‐‐
+              sseerr.
+
+       ----ssyysstteemm
+              Crée un utilisateur ou groupe système.
+
+       ----uuiidd _I_D
+              Force le nouvel identifiant utilisateur à un entier donné. aadddduu‐‐
+              sseerr échouera si cet identifiant est déjà utilisé.
+
+       ----ffiirrssttuuiidd _I_D
+              Force  la borne inférieure du domaine des identifiants (remplace
+              la valeur de FFIIRRSSTT__UUIIDD indiquée dans le  fichier  de  configura‐
+              tion).
+
+       ----llaassttuuiidd _I_D
+              Force   la   borne   supérieure   du  domaine  des  identifiants
+              (LLAASSTT__UUIIDD).
+
+       ----aadddd__eexxttrraa__ggrroouuppss
+              Ajoute l'utilisateur aux groupes supplémentaires définis dans le
+              fichier de configuration.
+
+       ----vveerrssiioonn
+              Affiche la version et le copyright.
+
+
+VVAALLEEUURRSS DDEE RREETTOOUURR
+       00      L'utilisateur,  tel qu'il a été demandé, existe. Ceci peut avoir
+              deux causes : l'utilisateur a été créé par adduser ou l'utilisa‐
+              teur  était  déjà présent sur le système lors de l'appel à addu‐
+              ser. Si adduser a renvoyé 0, un second appel à adduser avec  les
+              mêmes arguments renvoie 0.
+
+       11      La  création de l'utilisateur ou du groupe a échoué pour une des
+              raisons suivantes : le nom existe déjà avec un autre identifiant
+              que  celui  indiqué ;  le  nom  d'utilisateur ou de groupe a été
+              rejeté parce qu'il ne correspond pas à l'expression  rationnelle
+              configurée, consultez adduser.conf(5) ; adduser a été interrompu
+              par un signal.
+              Ou pour plein d'autres raisons toujours pas documentées qui sont
+              affichées  sur  la  console.  Vous pouvez alors retirer l'option
+              ----qquuiieett pour rendre adduser plus bavard.
+
+
+FFIICCHHIIEERRSS
+       _/_e_t_c_/_a_d_d_u_s_e_r_._c_o_n_f
+              Fichier de configuration par défaut d'aadddduusseerr(8) et aaddddggrroouupp(8).
+
+VVOOIIRR AAUUSSSSII
+       aadddduusseerr..ccoonnff(5),  ddeelluusseerr(8),  uusseerraadddd(8),   ggrroouuppaadddd(8),   uusseerrmmoodd(8),
+       Charte Debian 9.2.2.
+
+
+TTRRAADDUUCCTTIIOONN
+       Ce  document  est  une  traduction, réalisée par Nicolas FRANÇOIS le 29
+       octobre 2004.
+
+       L'équipe de traduction a fait le maximum pour réaliser  une  adaptation
+       française de qualité.
+
+       La version anglaise de ce document est toujours consultable en ajoutant
+       l'option « -L C » à la commande mmaann.
+
+       N'hésitez pas à signaler  à  l'auteur  ou  à  la  liste  de  traduction
+       <_d_e_b_i_a_n_-_l_1_0_n_-_f_r_e_n_c_h_@_l_i_s_t_s_._d_e_b_i_a_n_._o_r_g>,  selon le cas, toute erreur dans
+       cette page de manuel.
+
+CCOOPPYYRRIIGGHHTT
+       Copyright (C) 1997, 1998,  1999  Guy  Maor.  Modifications  par  Roland
+       Bauerschmidt  et  Marc  Haber. Patches supplémentaires par Joerg Hoh et
+       Stephen Gran.
+       Copyright (C) 1995 Ted Hajek, avec beaucoup de choses empruntées  à  la
+       commande aadddduusseerr de Debian.
+       Copyright (C) 1994 Ian Murdock. aadddduusseerr est un logiciel libre ; consul‐
+       tez la licence publique générale du projet GNU (« GPL ») version  2  ou
+       supérieure  pour  les droits de copie. Ce programme est fourni sans _a_u_‐
+       _c_u_n_e garantie.
+
+
+
+Debian GNU/Linux           Version 3.113+nmu3ubuntu3                ADDUSER(8)
