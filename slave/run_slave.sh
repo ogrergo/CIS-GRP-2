@@ -23,8 +23,11 @@ CONTAINER_CMD="$CONTAINER_DIR/script.sh"
 
 EXIT_BY_TIMEOUT_CODE=124
 
-mkdir $JOB_DIR 2>/dev/null
 echo "[INFO]- `date` - Starting slave's demon" >> $LOG_FILE
+
+mkdir $JOB_DIR 2>/dev/null
+mkdir $JOB_ENV_DIR 2>/dev/null
+
 while true
 do
 
@@ -68,6 +71,7 @@ do
 			output="$file.output"
 			echo "[INFO]- `date` - $file - Starting job execution in Docker" >> $LOG_FILE
 			docker run --rm --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER timeout $TIMEOUT_DELAY /bin/bash -c "$CONTAINER_CMD &> $CONTAINER_OUTPUT < $CONTAINER_INPUT"
+			#docker run --rm --name job -v $JOB_ENV_DIR:$CONTAINER_DIR -it -u slave_user $USER /bin/bash
 			if [[ $? -eq $EXIT_BY_TIMEOUT_CODE ]]
 			then
 				echo "ERROR: your task exceeded maximum execution time." > $JOB_ENV_DIR/$output
