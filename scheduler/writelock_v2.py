@@ -18,9 +18,9 @@ GRIDS = [1,3,4] # IPS
 
 def update_slave_dockers():
 	with open(slave_file, "a+") as g:
-		print "before"
+		#print "before"
 		fcntl.flock(g, fcntl.LOCK_EX)
-		print "in lock"
+		#print "in lock"
 		#g.write(new_entry)
 		#k = g.readlines()
 		#print k
@@ -37,7 +37,7 @@ def update_slave_dockers():
 			if used_dockers < MAX_DOCKERS_PER_SLAVE:
 				found_a_slave = True # there is an available slave
 
-				print "Inside the if"
+				#print "Inside the if"
 				new_line = "%s %d\n" %(slave_ip, used_dockers+1)
 
 				lines[line_index] = new_line
@@ -47,14 +47,14 @@ def update_slave_dockers():
 					f.writelines(["%s" %item  for item in lines])
 
 				f.close()
-				print "endif"
+				#print "endif"
 
 				break
 
 		time.sleep(1)
 		fcntl.flock(g, fcntl.LOCK_UN)
 		g.close()
-		print "unlocked"
+		#print "unlocked"
 		if found_a_slave is True:
 			return slave_ip
 
