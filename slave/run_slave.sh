@@ -74,6 +74,7 @@ do
 			echo "[INFO]- `date` - $file - Editing rights" >> $LOG_FILE
 			echo "" >>$JOB_INPUT 2>/dev/null
 			echo "" >>$JOB_OUTPUT 2>/dev/null
+			chmod a+x $JOB_CMD
 			rm $JOB_ENV_DIR/$JOB_NAME
 			
 			#-----------------------
