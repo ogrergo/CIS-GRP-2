@@ -1,0 +1,7 @@
+/jobs IN_CLOSE_WRITE ./home/new_ordoserver/Documents/watch_jobs.sh $#
+/home/interface_ftp IN_CLOSE_WRITE python /home/new_ordoserver/Documents/writelock_v2.py $#
+/home/slave0/ IN_CLOSE_WRITE /home/new_ordoserver/Documents/send_output.sh $# /home/slave0
+/home/slave2/ IN_CLOSE_WRITE /home/new_ordoserver/Documents/send_output.sh $# /home/slave2
+/home/slave3/ IN_CLOSE_WRITE /home/new_ordoserver/Documents/send_output.sh $# /home/slave3
+/home/slave4/ IN_CLOSE_WRITE /home/new_ordoserver/Documents/send_output.sh $# /home/slave4
+
