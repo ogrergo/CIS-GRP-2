@@ -22,14 +22,14 @@ def update_logger_file(file_name, slave_ip, status):
 
 		print file_name
 		try:
-			if status == "sent":
-				job_id = file_name.split("_")[2].split(".")[0]
+			#if status == "sent":
+			job_id = file_name.split("_")[2].split(".")[0]
 		
-			elif status == "received":
-				job_id = file_name.split("_")[3].split(".")[0]
+			#elif status == "received":
+			#	job_id = file_name.split("_")[3].split(".")[0]
 
-			else:
-				raise Exception("Incorrect status.\n")				
+			#else:
+			#	raise Exception("Incorrect status.\n")				
 
 		except:
 			raise Exception("Incorrect filename format.\n")

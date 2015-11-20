@@ -23,9 +23,11 @@ CONTAINER_CMD="$CONTAINER_DIR/script.sh"
 
 EXIT_BY_TIMEOUT_CODE=124
 
+echo "[INFO]- `date` - Starting slave's demon" >> $LOG_FILE
+
 mkdir $JOB_DIR 2>/dev/null
 mkdir $JOB_ENV_DIR 2>/dev/null
-echo "[INFO]- `date` - Starting slave's demon" >> $LOG_FILE
+
 while true
 do
 
@@ -47,11 +49,11 @@ do
 			#extract the archive
 			echo "[INFO]- `date` - $file - Extracting job" >> $LOG_FILE
 			tar -zxf $JOB_TAR -C $JOB_ENV_DIR
-			#add execution rights to the job
+			#add rights for the shared environment
 			echo "[INFO]- `date` - $file - Editing rights" >> $LOG_FILE
-			chmod u+x $JOB_CMD
-			#creates input if doesn't exist
 			>>$JOB_INPUT
+			>>$JOB_OUTPUT
+			rm $JOB_ENV_DIR/$JOB_NAME
 			
 			#-----------------------
 			# Log command
@@ -87,7 +89,7 @@ do
 			#-----------------------
 			# Clean environment
 			#-----------------------
-			rm $JOB_ENV_DIR/*				
+			#rm $JOB_ENV_DIR/*				
 			echo "[INFO]- `date` - $file - End of job and environment cleaned" >> $LOG_FILE
 		fi	
 	else
