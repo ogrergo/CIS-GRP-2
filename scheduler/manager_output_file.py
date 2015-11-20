@@ -6,12 +6,11 @@ import subprocess
 from parser_log_file import update_logger_file
 from job_finished import update_slave_dockers
 
-slave = ["129.88.242.140" , None, "129.88.242.142","129.88.242.146","129.88.242.147"]
+slave = ["129.88.242.140", None, "129.88.242.142", "129.88.242.146", "129.88.242.147"]
 
-
+GRID_USERS = { 1 : "site2@129.88.242.130:/jobs", 3 : "@", 4 : "@" }
 
 def findSlaveSource(file_name):
-	print file_name, "AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
 	slaveNumber = file_name.strip('\n').split("/")[2].replace("slave","")
 	return slaveNumber
 
@@ -28,22 +27,23 @@ def renameOutput(file_name):
 	
 def main(file_name, slave_dir):
 	
-	gridNumber = findGridSource(file_name)
+	gridNumber = int(findGridSource(file_name))
 	slaveNumber = findSlaveSource(slave_dir)
-	#print "CHAMANDO UPDATE SLAVE update_slave_dockers\n"
-	#print "ARG = %s\n" %("slave"+ gridNumber + "@" + slave[int(slaveNumber)]) 
+	#print "CHAMANDO update_slave_dockers\n"
+	#print "ARG = %s\n" %("slave"+ slaveNumber + "@" + slave[int(slaveNumber)]) 
 	update_slave_dockers("slave"+ slaveNumber + "@" + slave[int(slaveNumber)])
 	newName = renameOutput(file_name)
 	update_logger_file(newName.split("/")[4], "slave"+ slaveNumber+ "@" + slave[int(slaveNumber)], "received")
-	print "manager finished"
+	print "Manager has finished"
 	if gridNumber == 2:
-		#subprocess.Popen(["./run_job.sh", inputfile, slv_ip], shell=True) RODAR UM ENVIO PRA INTERFACE
+		subprocess.call("/home/new_ordoserver/Documents/ftp_req.sh "+ newName, shell=True) #RODAR UM ENVIO PRA INTERFACE
 		pass
 	else:
-		#subprocess.Popen(["./run_job.sh", inputfile, slv_ip], shell=True) RODAR UM ENVIO PRA INTERFACE
-		pass
+		subprocess.call("scp " + newName + " " + GRID_USERS[int(gridNumber)], shell=True)
+		
+		
 	#subprocess.call("rm /home/new_ordoserver/interface_ftp/"+ newName, shell=True)
 
 if __name__ == '__main__':
-	print "stqrting manager"
+	#print "starting manager"
 	main(sys.argv[1], sys.argv[2])

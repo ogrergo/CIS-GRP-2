@@ -6,7 +6,7 @@ import sys
 from parser_log_file import update_logger_file
 
 
-MAX_DOCKERS_PER_SLAVE = 4
+MAX_DOCKERS_PER_SLAVE = 1
 # CHECK IF THE NUMBER OF DOCKERS USED IN A SLAVE IS LOWER THAN THE MAX OF DOCKERS AVAILABLE PER SLAVE. IF IT IS, ADD +1 IN THE NUMBER OF DOCKS USED BY THAT SLAVE AND UPDATE THE FILE
 
 slave_file = "/home/new_ordoserver/Documents/slaves.txt"
@@ -61,11 +61,6 @@ def main():
 		# format expected for the output file:
 		# output_archive_2_idJob.extension
 		output_filename = sys.argv[2]
-
-
-		print "RECEBI NO JOB FINISHED::::::::::::::\n"
-		print "FILENAME = %s\n" %output_filename
-		print "SLAVE = %s\n" %slv_ip
 		update_slave_dockers(slv_ip)
 
 		#update_logger_file(output_filename, slv_ip, "received")
