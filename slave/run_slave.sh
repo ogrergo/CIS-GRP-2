@@ -72,8 +72,8 @@ do
 				continue
 			fi
 			echo "[INFO]- `date` - $file - Editing rights" >> $LOG_FILE
-			>>$JOB_INPUT
-			>>$JOB_OUTPUT
+			echo "" >>$JOB_INPUT 2>/dev/null
+			echo "" >>$JOB_OUTPUT 2>/dev/null
 			rm $JOB_ENV_DIR/$JOB_NAME
 			
 			#-----------------------
@@ -112,7 +112,7 @@ do
 			#-----------------------
 			# Clean environment
 			#-----------------------
-			#rm $JOB_ENV_DIR/*				
+			rm $JOB_ENV_DIR/*				
 			echo "[INFO]- `date` - $file - End of job and environment cleaned" >> $LOG_FILE
 		fi	
 	else
