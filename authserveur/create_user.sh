@@ -33,4 +33,3 @@ echo "$1:$INDEX" >> /etc/user_map
 
 #Enregistrement d'un listener sur son home
 
-
